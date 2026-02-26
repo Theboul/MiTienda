@@ -1,0 +1,10 @@
+// 1. Define el motor de base de datos
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// 2. Define que quieres generar el cliente para JavaScript/TypeScript
+generator client {
+  provider = "prisma-client-js"
+}

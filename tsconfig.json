@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",                /* Versión moderna de JS */
+    "module": "CommonJS",              /* Estándar para Node.js */
+    "rootDir": "./src",                /* Donde está tu código fuente */
+    "outDir": "./dist",                /* Donde se guardará el código compilado */
+    "esModuleInterop": true,           /* Compatibilidad con paquetes antiguos */
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,                    /* Activa todas las comprobaciones de tipo */
+    "skipLibCheck": true,              /* Acelera la compilación ignorando tipos de librerías */
+    "sourceMap": true,                 /* Ayuda a debugear errores en el código original */
+    "resolveJsonModule": true          /* Permite importar archivos .json */
+  },
+  "include": ["src/**/*"],             /* Solo compila lo que esté en src */
+  "exclude": ["node_modules"]          /* Ignora las dependencias */
+}
