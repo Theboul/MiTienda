@@ -1,10 +1,54 @@
 // 1. Define el motor de base de datos
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
-// 2. Define que quieres generar el cliente para JavaScript/TypeScript
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["driverAdapters"] 
+}
+
+
+model Usuario{
+  id_user Int @id @default(autoincrement())
+  nombre String
+  correo String @unique
+  telefono String
+  password String
+
+  rol Rol @relation(fields: [id_rol], references: id_rol)
+  id_rol Int
+
+  ventas   Venta[]
+  compras  Compra[]
+  
+  @@map("usuarios")
+}
+
+model Rol{
+  id_rol Int @id @default(autoincrement())
+  nombre String @unique
+  usuarios Usuario[]
+
+  @@map("roles")
+}
+
+model Venta {
+  id_venta    Int      @id @default(autoincrement())
+  fecha       DateTime @default(now())
+  total       Decimal  @db.Decimal(10, 2)
+  usuario     Usuario  @relation(fields: [id_usuario], references: [id_user])
+  id_usuario  Int
+
+  @@map("ventas")
+}
+
+model Compra {
+  id_compra   Int      @id @default(autoincrement())
+  fecha       DateTime @default(now())
+  total       Decimal  @db.Decimal(10, 2)
+  usuario     Usuario  @relation(fields: [id_usuario], references: [id_user])
+  id_usuario  Int
+
+  @@map("compras")
 }
