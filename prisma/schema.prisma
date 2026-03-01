@@ -37,9 +37,11 @@ model Venta {
   id_venta    Int      @id @default(autoincrement())
   fecha       DateTime @default(now())
   total       Decimal  @db.Decimal(10, 2)
+
   usuario     Usuario  @relation(fields: [id_usuario], references: [id_user])
   id_usuario  Int
 
+  productos ProductoVenta[]
   @@map("ventas")
 }
 
@@ -47,8 +49,78 @@ model Compra {
   id_compra   Int      @id @default(autoincrement())
   fecha       DateTime @default(now())
   total       Decimal  @db.Decimal(10, 2)
+
   usuario     Usuario  @relation(fields: [id_usuario], references: [id_user])
   id_usuario  Int
+  proveedor   proveedor @relation(fields: [id_proveedor], references: [id_proveedor])
+  id_proveedor Int
 
+  productos CompraProducto[]
   @@map("compras")
+}
+
+model Producto {
+  id_producto Int      @id @default(autoincrement())
+  nombre      String
+  precio      Decimal  @db.Decimal(10, 2)
+  stock_total Int
+  url_imagen  String
+  stock_minimo Int
+  descripcion String
+  
+  categoria   categoria @relation(fields: [idcategoria], references: [id_categoria])
+  idcategoria Int
+
+  venta ProductoVenta[]
+  compra CompraProducto[]
+  @@map("productos")
+}
+
+model categoria {
+  id_categoria Int      @id @default(autoincrement())
+  nombre       String   @unique
+  productos    Producto[]
+
+  @@map("categorias")
+}
+
+model proveedor {
+  id_proveedor Int      @id @default(autoincrement())
+  nombre       String
+  telefono     String
+  empresa     String
+  compras      Compra[]
+  
+
+  @@map("proveedores")
+}
+
+model ProductoVenta {
+  id_producto_venta Int      @id @default(autoincrement())
+  cantidad          Int
+  prescio_venta     Decimal  @db.Decimal(10, 2)
+  subtotal          Decimal  @db.Decimal(10, 2)
+
+  venta             Venta    @relation(fields: [id_venta], references: [id_venta])
+  id_venta          Int
+
+  producto          Producto @relation(fields: [id_producto], references: [id_producto])
+  id_producto       Int
+
+  @@map("producto_ventas")
+}
+
+model CompraProducto {
+  id_compra_producto Int      @id @default(autoincrement())
+  cantidad           Int
+  precio_compra      Decimal  @db.Decimal(10, 2)
+  subtotal           Decimal  @db.Decimal(10, 2)
+
+  compra             Compra   @relation(fields: [id_compra], references: [id_compra])
+  id_compra          Int
+
+  producto           Producto @relation(fields: [id_producto], references: [id_producto])
+  id_producto        Int
+
+  @@map("compra_productos")
 }
