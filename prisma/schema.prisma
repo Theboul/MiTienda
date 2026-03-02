@@ -5,24 +5,6 @@ datasource db {
 
 generator client {
   provider = "prisma-client-js"
-  previewFeatures = ["driverAdapters"] 
-}
-
-
-model Usuario{
-  id_user Int @id @default(autoincrement())
-  nombre String
-  correo String @unique
-  telefono String
-  password String
-
-  rol Rol @relation(fields: [id_rol], references: id_rol)
-  id_rol Int
-
-  ventas   Venta[]
-  compras  Compra[]
-  
-  @@map("usuarios")
 }
 
 model Rol{
@@ -33,22 +15,158 @@ model Rol{
   @@map("roles")
 }
 
+
+model Usuario{
+  id_user Int @id @default(autoincrement())
+  nombre String
+  correo String @unique
+  telefono String
+  password String
+
+  id_rol Int
+  rol Rol @relation(fields: [id_rol], references: id_rol)
+ 
+  ventas   Venta[]
+  compras  Compra[]
+  tiendas UsuarioTienda[]
+
+  @@map("usuarios")
+}
+
+model Tienda {
+  id_tienda Int @id @default(autoincrement())
+  nombre String
+  direccion String
+  nit String
+  activo Boolean @default(true)
+
+  usuarios UsuarioTienda[]
+  productos Producto[]
+  ventas Venta[]
+  compras Compra[]
+
+  @@map("tiendas")
+}
+
+model UsuarioTienda {
+  id_usuario_tienda Int @id @default(autoincrement())
+  id_usuario Int
+  id_tienda Int
+  fecha_asignacion DateTime @default(now())
+  es_principal Boolean @default(false)
+  estado String @default("ACTIVO")
+
+  usuario Usuario @relation(fields: [id_usuario], references: [id_user])
+  tienda Tienda @relation(fields: [id_tienda], references: [id_tienda])
+
+  @@unique([id_usuario, id_tienda])
+  @@map("usuarios_tiendas")
+}
+
+model Categoria {
+  id_categ Int @id @default(autoincrement())
+  nombre String @unique
+
+  Productos Producto[]
+
+  @@map("categorias")
+}
+
+model Producto {
+  id_producto Int @id @default(autoincrement())
+  nombre String
+  stock_total Int @default(0)
+  url_imagen String?
+  precio Decimal @db.Decimal(10, 2)
+  descripcion String?
+  stock_minimo Int @default(5)
+
+  id_tienda Int
+  tienda Tienda @relation(fields: [id_tienda], references: [id_tienda])
+  id_categ Int
+  categoria Categoria @relation(fields: [id_categ], references: [id_categ])
+
+  ventas ProductoVenta[]
+  compras CompraProducto[]
+
+  @@map("productos")
+}
+
 model Venta {
-  id_venta    Int      @id @default(autoincrement())
-  fecha       DateTime @default(now())
-  total       Decimal  @db.Decimal(10, 2)
-  usuario     Usuario  @relation(fields: [id_usuario], references: [id_user])
-  id_usuario  Int
+  id_venta Int @id @default(autoincrement())
+  fecha_venta DateTime @default(now())
+  metodo_pago String
+  pago_con Decimal @db.Decimal(10, 2)
+  pago_total Decimal @db.Decimal(10, 2)
+  total_pagado Decimal @db.Decimal(10, 2)
+
+  id_tienda Int
+  tienda Tienda @relation(fields: [id_tienda], references: [id_tienda])
+  
+  id_usuario Int
+  usuario Usuario @relation(fields: [id_usuario], references: [id_user])
+
+  productos ProductoVenta[]
 
   @@map("ventas")
 }
 
+model ProductoVenta {
+  id_producto_venta Int @id @default(autoincrement())
+  id_venta Int
+  id_producto Int
+  cantidad Int
+  precio_de_venta Decimal @db.Decimal(10, 2)
+  sub_total Decimal @db.Decimal(10, 2)
+
+  venta Venta @relation(fields: [id_venta], references: [id_venta])
+  producto Producto @relation(fields: [id_producto], references: [id_producto])
+
+  @@unique([id_venta, id_producto])
+  @@map("productos_ventas")
+}
+
+model Proveedor {
+  id_proveedor Int @id @default(autoincrement())
+  nombre String
+  telefono String
+  empresa String
+
+  compras Compra[]
+
+  @@map("proveedores")
+}
+
 model Compra {
-  id_compra   Int      @id @default(autoincrement())
-  fecha       DateTime @default(now())
-  total       Decimal  @db.Decimal(10, 2)
-  usuario     Usuario  @relation(fields: [id_usuario], references: [id_user])
-  id_usuario  Int
+  id_compra Int @id @default(autoincrement())
+  fecha_entrega DateTime @default(now())
+  total Decimal @db.Decimal(10, 2)
+  
+  id_usuario Int
+  usuario Usuario @relation(fields: [id_usuario], references: [id_user])
+  
+  id_tienda Int
+  tienda Tienda @relation(fields: [id_tienda], references: [id_tienda])
+
+  id_proveedor Int
+  proveedor Proveedor @relation(fields: [id_proveedor], references: [id_proveedor])
+
+  productos CompraProducto[]
 
   @@map("compras")
+}
+
+model CompraProducto {
+  id_producto_compra Int @id @default(autoincrement())
+  id_compra Int
+  id_producto Int
+  precio_de_compra Decimal @db.Decimal(10, 2)
+  cantidad Int
+  sub_total Decimal @db.Decimal(10, 2)
+
+  compra Compra @relation(fields: [id_compra], references: [id_compra])
+  producto Producto @relation(fields: [id_producto], references: [id_producto])
+
+  @@unique([id_compra, id_producto])
+  @@map("productos_compras")
 }
