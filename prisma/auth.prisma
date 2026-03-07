@@ -1,0 +1,25 @@
+
+model Rol{
+  id_rol Int @id @default(autoincrement())
+  nombre String @unique
+  usuarios Usuario[]
+
+  @@map("roles")
+}
+
+model Usuario{
+  id_user Int @id @default(autoincrement())
+  nombre String
+  correo String @unique
+  telefono String
+  password String
+
+  id_rol Int
+  rol Rol @relation(fields: [id_rol], references: id_rol)
+ 
+  ventas   Venta[]
+  compras  Compra[]
+  tiendas UsuarioTienda[]
+
+  @@map("usuarios")
+}

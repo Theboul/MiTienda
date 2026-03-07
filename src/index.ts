@@ -3,7 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
 
-import authRoutes from './routes/auth.routes';
+import authRoutes from './modules/auth/auth.routes';
 
 // Cargar variables de entorno
 dotenv.config();

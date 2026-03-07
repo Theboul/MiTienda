@@ -1,7 +1,7 @@
 
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import prisma from '../access-data/db';
+import prisma from '../../access-data/db';
 import { includes } from 'zod';
 
 interface UserRegisterData {

@@ -1,0 +1,44 @@
+model Proveedor {
+  id_proveedor Int @id @default(autoincrement())
+  nombre String
+  telefono String
+  empresa String
+
+  compras Compra[]
+
+  @@map("proveedores")
+}
+
+model Compra {
+  id_compra Int @id @default(autoincrement())
+  fecha_entrega DateTime @default(now())
+  total Decimal @db.Decimal(10, 2)
+  
+  id_usuario Int
+  usuario Usuario @relation(fields: [id_usuario], references: [id_user])
+  
+  id_tienda Int
+  tienda Tienda @relation(fields: [id_tienda], references: [id_tienda])
+
+  id_proveedor Int
+  proveedor Proveedor @relation(fields: [id_proveedor], references: [id_proveedor])
+
+  productos CompraProducto[]
+
+  @@map("compras")
+}
+
+model CompraProducto {
+  id_producto_compra Int @id @default(autoincrement())
+  id_compra Int
+  id_producto Int
+  precio_de_compra Decimal @db.Decimal(10, 2)
+  cantidad Int
+  sub_total Decimal @db.Decimal(10, 2)
+
+  compra Compra @relation(fields: [id_compra], references: [id_compra])
+  producto Producto @relation(fields: [id_producto], references: [id_producto])
+
+  @@unique([id_compra, id_producto])
+  @@map("productos_compras")
+}
