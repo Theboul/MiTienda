@@ -1,0 +1,29 @@
+
+model Categoria {
+  id_categ Int @id @default(autoincrement())
+  nombre String @unique
+
+  Productos Producto[]
+
+  @@map("categorias")
+}
+
+model Producto {
+  id_producto Int @id @default(autoincrement())
+  nombre String
+  stock_total Int @default(0)
+  url_imagen String?
+  precio Decimal @db.Decimal(10, 2)
+  descripcion String?
+  stock_minimo Int @default(5)
+
+  id_tienda Int
+  tienda Tienda @relation(fields: [id_tienda], references: [id_tienda])
+  id_categ Int
+  categoria Categoria @relation(fields: [id_categ], references: [id_categ])
+
+  ventas ProductoVenta[]
+  compras CompraProducto[]
+
+  @@map("productos")
+}

@@ -1,0 +1,30 @@
+
+model Tienda {
+  id_tienda Int @id @default(autoincrement())
+  nombre String
+  direccion String
+  nit String
+  activo Boolean @default(true)
+
+  usuarios UsuarioTienda[]
+  productos Producto[]
+  ventas Venta[]
+  compras Compra[]
+
+  @@map("tiendas")
+}
+
+model UsuarioTienda {
+  id_usuario_tienda Int @id @default(autoincrement())
+  id_usuario Int
+  id_tienda Int
+  fecha_asignacion DateTime @default(now())
+  es_principal Boolean @default(false)
+  estado String @default("ACTIVO")
+
+  usuario Usuario @relation(fields: [id_usuario], references: [id_user])
+  tienda Tienda @relation(fields: [id_tienda], references: [id_tienda])
+
+  @@unique([id_usuario, id_tienda])
+  @@map("usuarios_tiendas")
+}

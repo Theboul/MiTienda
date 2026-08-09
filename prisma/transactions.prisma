@@ -1,0 +1,34 @@
+
+model Venta {
+  id_venta Int @id @default(autoincrement())
+  fecha_venta DateTime @default(now())
+  metodo_pago String
+  pago_con Decimal @db.Decimal(10, 2)
+  pago_total Decimal @db.Decimal(10, 2)
+  total_pagado Decimal @db.Decimal(10, 2)
+
+  id_tienda Int
+  tienda Tienda @relation(fields: [id_tienda], references: [id_tienda])
+  
+  id_usuario Int
+  usuario Usuario @relation(fields: [id_usuario], references: [id_user])
+
+  productos ProductoVenta[]
+
+  @@map("ventas")
+}
+
+model ProductoVenta {
+  id_producto_venta Int @id @default(autoincrement())
+  id_venta Int
+  id_producto Int
+  cantidad Int
+  precio_de_venta Decimal @db.Decimal(10, 2)
+  sub_total Decimal @db.Decimal(10, 2)
+
+  venta Venta @relation(fields: [id_venta], references: [id_venta])
+  producto Producto @relation(fields: [id_producto], references: [id_producto])
+
+  @@unique([id_venta, id_producto])
+  @@map("productos_ventas")
+}
