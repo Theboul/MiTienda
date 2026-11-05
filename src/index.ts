@@ -9,7 +9,7 @@ import authRoutes from './modules/auth/auth.routes';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3000;
 
 // Middlewares globales
 app.use(helmet());
@@ -18,7 +18,12 @@ app.use(express.json()); // ¡Importante para recibir JSON!
 
 // Ruta de prueba
 app.get('/health', (req, res) => {
-  res.json({ status: 'ok', message: 'Backend MiTienda está vivo' });
+  res.json({
+    status: 'ok',
+    message: 'Backend MiTienda está vivo',
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString()
+  });
 });
 
 // Rutas de autenticación
