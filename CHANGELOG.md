@@ -1,6 +1,1 @@
-# CHANGELOG
-
-## [Unreleased]
-
-### Añadido
-- Primera version
+Primera version
